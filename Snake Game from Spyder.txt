@@ -172,3 +172,5 @@ while True: #after this you will see that turtle
     
 wn.mainloop() 
 #On this the game ends
+
+#Now this one is added in Github
