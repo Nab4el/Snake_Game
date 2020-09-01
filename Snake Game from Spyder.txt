@@ -1,0 +1,174 @@
+#Simple snake game in python
+#coding by the help of @Tokyoedtech
+
+#Part 1 :getting started
+#Part2 :Directions May be
+#Part 3 :Snake Food
+#Part 4 :Segment (through which you can increase the snake body)
+#Part 5 :Border
+#Part 6 :Body Collision
+import turtle
+import time
+import random
+
+delay = 0.1
+
+#Score
+score=0
+high_score=0
+
+#set up the screen
+wn = turtle.Screen()
+wn.title("Snake Game by @Tokyoedtech")
+wn.bgcolor("green")
+wn.setup(width=600,height=600)
+wn.tracer(0)# it turns off the screen update
+
+#Snake head
+head = turtle.Turtle()
+head.speed(0)#its actually speed of turtle module not the actual speed
+head.shape("square")
+head.color("blue")
+head.penup() # so it does not draw any thing
+head.goto(0,0) # becuae we want to be at the centre of the screen
+head.direction="stop"
+
+#Snake Food((PART3))
+
+food=turtle.Turtle()
+food.speed(0)
+food.shape("circle")
+food.color("red")
+food.penup() # so it does not draw any thing
+food.goto(0,100) #ecuaeswe want to be at the centre of the screen
+
+segments=[] #part of the body # in part 4
+
+pen = turtle.Turtle()
+pen.speed(0)#its actually speed of turtle module not the actual speed
+pen.shape("square")
+pen.color("white")
+pen.penup() # so it does not draw any thing 
+pen.hideturtle()
+pen.goto(0,260)
+pen.write ("Score : 0 High Score :0", align="center", font= ("Courier", 24, "normal"))
+#Functions
+
+def go_up():
+    if head.direction !="down":#part 6
+        head.direction="up"  
+    # because of this if and ! opposite... you won't get out on opposing keyword
+    #But just if u hit the body and he bor
+def go_down():
+     if head.direction !="up":
+         head.direction="down"
+    
+def go_left():
+     if head.direction !="right":
+         head.direction="left"
+    
+def go_right():
+     if head.direction !="left":
+         head.direction="right"
+    
+
+
+#Function
+def move():
+    if head.direction=="up": 
+        y=head.ycor() # ycor() is used on python
+        head.sety(y + 20)#so if the head direction it will move 20 each time
+    if head.direction=="down":
+        y=head.ycor() # ycor() is used on python
+        head.sety(y - 20)    
+    if head.direction=="left":
+        x=head.xcor() # ycor() is used on python
+        head.setx(x - 20)
+    if head.direction=="right":
+        x=head.xcor() # ycor() is used on python
+        head.setx(x + 20)
+        
+#Keyboard Bindings (It connects key press with particular function)
+wn.listen() #Its also important
+wn.onkeypress(go_up,"w")
+wn.onkeypress(go_down,"s")
+wn.onkeypress(go_left,"a")
+wn.onkeypress(go_right,"d")   
+
+
+#Main game loop
+while True: #after this you will see that turtle
+    wn.update() #so everythime through this loop you update the screen
+    
+    #Check for a collision with the border #Part 5
+    if head.xcor()>280 or head.xcor()<-280 or head.ycor()>280 or head.ycor()<-280:
+        time.sleep(1) # to get the video paused for a second
+        head.goto(0,0)
+        head.direction="stop"
+        
+  
+
+    #Check for a collision with a food
+    if head.distance(food) < 20 :
+        #Then move the food to any random spot
+        x=random.randint(-280, 280) #randint is actually a function which is part of random module
+        y=random.randint(-280, 280)
+        food.goto(x,y)
+        
+        # Add a segment
+        new_segment= turtle.Turtle()
+        new_segment.speed(0)
+        new_segment.shape("square")
+        new_segment.color("blue")
+        new_segment.penup()
+        segments.append(new_segment) #append the segment 
+        
+        #Increase the Score (Part 7)
+        score=score+10
+        
+        if score > high_score:
+            high_score=score
+            
+        pen.clear()
+        pen.write("Score :{} High Score :{}".format (score, high_score), align="center", font= ("Courier", 24, "normal"))
+        
+        
+        
+        
+    #Move the end segment in the reverse order
+    for index in range(len(segments) -1, 0 ,-1 ):
+        x=segments[index-1].xcor()
+        y=segments[index-1].ycor()
+        segments[index].goto(x,y)
+    #Move segents 0 to where the head is
+    if len(segments)>0:
+        x=head.xcor()
+        y=head.ycor()
+        segments[0].goto(x,y)
+
+      
+        
+    
+    move()
+    
+    #Check the head collision for the body segments
+    for segment in segments: # Part 6 :Body collision
+        if segment.distance(head) <  20:
+            time.sleep(1)
+            head.goto(0,0)
+            head.direction = "stop"
+            
+            #Hide a segment
+            for segment in segments:
+                segment.goto(1000, 1000)
+                
+           #Clear the segments list
+            segments.clear()
+
+    
+    
+    time.sleep(delay)
+    
+    
+wn.mainloop() 
+#On this the game ends
